@@ -1,0 +1,8 @@
+# depslib dependency file v1.0
+1562745660 source:c:\users\idc\documents\projects\tekom_fix\tekom\main.cpp
+	<iostream>
+	<fstream>
+	<stdlib.h>
+	<string.h>
+	<ctype.h>
+
