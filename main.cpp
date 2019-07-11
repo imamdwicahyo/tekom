@@ -330,12 +330,61 @@ int checkIf(int num){
     return num;
 }
 
+int checkInput(int num){
+    cout << "token number "<< num << " - " << token[num][0] <<" [diterima] \n";
+    num++;
+
+    if(token[num][1] != "semicolon"){
+        if(token[num][1] != "becomes"){
+            cout << "eror : becomes " << token[num][0] << ", token number : " << num << " [tidak diterima]\n"; exit(0);
+        }else{
+            cout << "token number "<< num << " - " << token[num][0] <<" [diterima] \n";
+        }
+        num++;
+        if(token[num][2] != "identifier"){
+            cout << "eror : undefinied variable " << token[num][0] << ", token number : " << num << " [tidak diterima]\n"; exit(0);
+        }else{
+            cout << "token number "<< num << " - " << token[num][0] <<" [diterima] \n";
+        }
+        num++;
+        while(token[num][2] == "Operator"){
+            cout << "token number "<< num << " - " << token[num][0] <<" [diterima] \n";
+            num++;
+            if(token[num][2] != "identifier"){
+            cout << "eror : undefinied variable " << token[num][0] << ", token number : " << num << " [tidak diterima]\n"; exit(0);
+            }else{
+                cout << "token number "<< num << " - " << token[num][0] <<" [diterima] \n";
+            }
+            num++;
+        }
+        if(token[num][1] != "semicolon"){
+            cout << "eror : undefinied variable " << token[num][0] << ", token number : " << num << " [tidak diterima]\n"; exit(0);
+        }else{
+            cout << "token number "<< num << " - " << token[num][0] <<" [diterima] \n";
+        }
+        num++;
+    }else{
+        if(token[num][1] != "semicolon"){
+            cout << "eror : undefinied variable " << token[num][0] << ", token number : " << num << " [tidak diterima]\n"; exit(0);
+        }else{
+            cout << "token number "<< num << " - " << token[num][0] <<" [diterima] \n";
+        }
+        num++;
+    }
+
+
+
+    return num;
+}
+
 int checkBody(int num){
     cout << "token number "<< num << " - " << token[num][0] <<" [diterima] \n";
     num++;
     while((token[num][0] != "end" && token[num+1][0] != ".") && num <= i){
-        if(token[num][0] == "if"){
+        if(token[num][1] == "if_fy"){
             num = checkIf(num);
+        }else if(token[num][2] == "identifier"){
+            num = checkInput(num);
         }else{
             num++;
         }

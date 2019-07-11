@@ -12,6 +12,5 @@ begin
         x:= 4;
 
    z := x + a;
-   writeln(z);
    readln;
 end.
