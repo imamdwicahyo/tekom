@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1562805284 source:c:\users\idc\documents\projects\tekom_fix\tekom\main.cpp
+1562817895 source:c:\users\idc\documents\projects\tekom_fix\tekom\main.cpp
 	<iostream>
 	<fstream>
 	<stdlib.h>
