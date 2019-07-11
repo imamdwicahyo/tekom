@@ -1,8 +1,10 @@
+#pragma once
+
 #include <iostream>
 #include<fstream>
 #include<stdlib.h>
 
-
+void funEror();
 using namespace std;
 string token[100][3];
 int i = 0;
@@ -135,7 +137,7 @@ void scanner(){
     //pengecekan apakah file ada atau tidak
 	if(!Myfile.is_open()){
 		cout<<"file program tidak ditemukan, harap periksa kembali\n";
-		exit(0);
+		funEror();
 	}
 
 
@@ -151,7 +153,7 @@ void scanner(){
         }else
         if(ch == '\''){
             ch = Myfile.get();
-            while(ch != '\''){
+            while(ch != '\'' && !Myfile.eof()){
                 kata = kata + ch;
                 ch = Myfile.get();
             }
@@ -243,21 +245,25 @@ void scanner(){
 	}
 }
 
+void funEror(){
+    system("pause"); exit(0);
+}
+
 int checkTitle(int num){
     if(token[num][0] != "program"){
-        cout << "eror : program tidak dideklarasikan, token number : " << num << " [tidak diterima]\n"; exit(0);
+        cout << "eror : program tidak dideklarasikan, token number : " << num << " [tidak diterima]\n"; funEror();
     }else{
         cout << "token number "<< num << " - " << token[num][0] <<" [diterima] \n";
     }
     num++;
     if(token[num][2] != "identifier"){
-        cout << "eror : nama program [" << token[num][0] << "], token number : " << num << " [tidak diterima]\n"; exit(0);
+        cout << "eror : nama program [" << token[num][0] << "], token number : " << num << " [tidak diterima]\n"; funEror();
     }else{
         cout << "token number "<< num << " - " << token[num][0] <<" [diterima] \n";
     }
     num++;
     if(token[num][0] != ";"){
-        cout << "eror : program not declared, token number : " << num << " [tidak diterima]\n"; exit(0);
+        cout << "eror : program not declared, token number : " << num << " [tidak diterima]\n"; funEror();
     }else{
         cout << "token number "<< num << " - " << token[num][0] <<" [diterima] \n";
     }
@@ -268,25 +274,25 @@ int checkTitle(int num){
 
 int checkVariable(int num){
     if(token[num][1] != "identifier"){
-        cout << "eror : nama variabel [" << token[num][0] << "], token number : " << num << " [tidak diterima]\n"; exit(0);
+        cout << "eror : nama variabel [" << token[num][0] << "], token number : " << num << " [tidak diterima]\n"; funEror();
     }else{
         cout << "token number "<< num << " - " << token[num][0] <<" [diterima] \n";
     }
     num++;
     if(token[num][1] != "colon"){
-        cout << "eror : colon tidak ditemukan [" << token[num][0] << "], token number : " << num << " [tidak diterima]\n"; exit(0);
+        cout << "eror : colon tidak ditemukan [" << token[num][0] << "], token number : " << num << " [tidak diterima]\n"; funEror();
     }else{
         cout << "token number "<< num << " - " << token[num][0] <<" [diterima] \n";
     }
     num++;
     if(token[num][1] != "tipedata"){
-        cout << "eror : tipedata tidak terdefinisi [" << token[num][0] << "], token number : " << num << " [tidak diterima]\n"; exit(0);
+        cout << "eror : tipedata tidak terdefinisi [" << token[num][0] << "], token number : " << num << " [tidak diterima]\n"; funEror();
     }else{
         cout << "token number "<< num << " - " << token[num][0] <<" [diterima] \n";
     }
     num++;
     if(token[num][1] != "semicolon"){
-        cout << "eror : semicolon tidak terdefinisi [" << token[num][0] << "], token number : " << num << " [tidak diterima]\n"; exit(0);
+        cout << "eror : semicolon tidak terdefinisi [" << token[num][0] << "], token number : " << num << " [tidak diterima]\n"; funEror();
     }else{
         cout << "token number "<< num << " - " << token[num][0] <<" [diterima] \n";
     }
@@ -307,37 +313,37 @@ int checkIf(int num){
     cout << "token number "<< num << " - " << token[num][0] <<" [diterima] \n";
     num++;
     if(token[num][1] != "l_parent"){
-        cout << "eror : l_parent not found [" << token[num][0] << "[, token number : " << num << " [tidak diterima]\n"; exit(0);
+        cout << "eror : l_parent not found [" << token[num][0] << "[, token number : " << num << " [tidak diterima]\n"; funEror();
     }else{
         cout << "token number "<< num << " - " << token[num][0] <<" [diterima] \n";
     }
     num++;
     if(token[num][2] != "identifier"){
-        cout << "eror : variable [" << token[num][0] << "], token number : " << num << " [tidak diterima]\n"; exit(0);
+        cout << "eror : variable [" << token[num][0] << "], token number : " << num << " [tidak diterima]\n"; funEror();
     }else{
         cout << "token number "<< num << " - " << token[num][0] <<" [diterima] \n";
     }
     num++;
     if(token[num][2] != "Operator"){
-        cout << "eror : operator  [" << token[num][0] << "], token number : " << num << " [tidak diterima]\n"; exit(0);
+        cout << "eror : operator  [" << token[num][0] << "], token number : " << num << " [tidak diterima]\n"; funEror();
     }else{
         cout << "token number "<< num << " - " << token[num][0] <<" [diterima] \n";
     }
     num++;
     if(token[num][2] != "identifier"){
-        cout << "eror : variable [" << token[num][0] << "], token number : " << num << " [tidak diterima]\n"; exit(0);
+        cout << "eror : variable [" << token[num][0] << "], token number : " << num << " [tidak diterima]\n"; funEror();
     }else{
         cout << "token number "<< num << " - " << token[num][0] <<" [diterima] \n";
     }
     num++;
     if(token[num][1] != "r_parent"){
-        cout << "eror : r_parent not found [" << token[num][0] << "], token number : " << num << " [tidak diterima]\n"; exit(0);
+        cout << "eror : r_parent not found [" << token[num][0] << "], token number : " << num << " [tidak diterima]\n"; funEror();
     }else{
         cout << "token number "<< num << " - " << token[num][0] <<" [diterima] \n";
     }
     num++;
     if(token[num][1] != "thenfy"){
-        cout << "eror : then_fy not found [" << token[num][0] << "], token number : " << num << " [tidak diterima]\n"; exit(0);
+        cout << "eror : then_fy not found [" << token[num][0] << "], token number : " << num << " [tidak diterima]\n"; funEror();
     }else{
         cout << "token number "<< num << " - " << token[num][0] <<" [diterima] \n";
     }
@@ -352,13 +358,13 @@ int checkInput(int num){
 
     if(token[num][1] != "semicolon"){
         if(token[num][1] != "becomes"){
-            cout << "eror : becomes [" << token[num][0] << "], token number : " << num << " [tidak diterima]\n"; exit(0);
+            cout << "eror : becomes [" << token[num][0] << "], token number : " << num << " [tidak diterima]\n"; funEror();
         }else{
             cout << "token number "<< num << " - " << token[num][0] <<" [diterima] \n";
         }
         num++;
         if(token[num][2] != "identifier"){
-            cout << "eror : undefinied variable [" << token[num][0] << "], token number : " << num << " [tidak diterima]\n"; exit(0);
+            cout << "eror : undefinied variable [" << token[num][0] << "], token number : " << num << " [tidak diterima]\n"; funEror();
         }else{
             cout << "token number "<< num << " - " << token[num][0] <<" [diterima] \n";
         }
@@ -367,28 +373,26 @@ int checkInput(int num){
             cout << "token number "<< num << " - " << token[num][0] <<" [diterima] \n";
             num++;
             if(token[num][2] != "identifier"){
-            cout << "eror : undefinied variable [" << token[num][0] << "], token number : " << num << " [tidak diterima]\n"; exit(0);
+            cout << "eror : undefinied variable [" << token[num][0] << "], token number : " << num << " [tidak diterima]\n"; funEror();
             }else{
                 cout << "token number "<< num << " - " << token[num][0] <<" [diterima] \n";
             }
             num++;
         }
         if(token[num][1] != "semicolon"){
-            cout << "eror : undefinied variable [" << token[num][0] << "], token number : " << num << " [tidak diterima]\n"; exit(0);
+            cout << "eror : undefinied variable [" << token[num][0] << "], token number : " << num << " [tidak diterima]\n"; funEror();
         }else{
             cout << "token number "<< num << " - " << token[num][0] <<" [diterima] \n";
         }
         num++;
     }else{
         if(token[num][1] != "semicolon"){
-            cout << "eror : undefinied variable [" << token[num][0] << "], token number : " << num << " [tidak diterima]\n"; exit(0);
+            cout << "eror : undefinied variable [" << token[num][0] << "], token number : " << num << " [tidak diterima]\n"; funEror();
         }else{
             cout << "token number "<< num << " - " << token[num][0] <<" [diterima] \n";
         }
         num++;
     }
-
-
 
     return num;
 }
@@ -426,7 +430,7 @@ void Parser(){
         cout << "token number "<< token_number+1 << " - " << token[token_number+1][0] <<" [diterima] \n";
         cout << "String Diterima \n\n\n";
     }else{
-        cout << "eror : end file not found, token number : " << token_number << " [tidak diterima]\n"; exit(0);
+        cout << "eror : end file not found, token number : " << token_number << " [tidak diterima]\n"; funEror();
     }
 }
 
@@ -441,5 +445,3 @@ int main()
 	system("pause");
     return 0;
 }
-
-
