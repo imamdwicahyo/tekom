@@ -40,7 +40,8 @@ string cekKeyword(string key){
         {"end","end_fy"},
         {"else","else_fy"},
         {"until","until_fy"},
-        {"ident","indent_fy"}
+        {"ident","indent_fy"},
+        {"int","integer_fy"}
     };
 
     //pengecekan
@@ -115,7 +116,8 @@ void tampil_scanner(){
 //fungsi utama
 int main()
 {
-    char ch;
+    char ch = ' ';
+    bool first = true;
     string kata = "";
 
     //mengambil text
@@ -130,23 +132,19 @@ int main()
 
     //melakukan pengecekan perkarakter
 	while(!Myfile.eof()){
-        if(i == 0){
+        if(first){
             ch = Myfile.get();
-            cout << "kepanggil nih \n";
-        }else{
-            ch = ' ';
-            cout << "gak kepanggil nih \n";
         }
-
-
+        first = false;
 
         if(ch == '{'){
-            //isi disini
-        }
+            ch = Myfile.get();
+        }else
         if(ch == '\''){
-            //isi disini
-        }
+            ch = Myfile.get();
+        }else
         if((ch>='A' && ch<='Z')||(ch>='a' && ch<='z')||ch=='_'){
+
             while((ch>='A' && ch<='Z')||(ch>='a' && ch<='z')||ch=='_'){
                 kata = kata + ch;
                 ch = Myfile.get();
@@ -157,7 +155,7 @@ int main()
             token[i][2]="Keyword";
             i++;
             kata = "";
-        }
+        }else
         if(ch>='0' && ch<='9'){
             while(ch>='0' && ch<='9'){
                 kata = kata + ch;
@@ -168,21 +166,40 @@ int main()
             token[i][2]="identifier";
             i++;
             kata = "";
-        }
+        }else
         if(ch=='+'||ch=='-'||ch=='*'||ch=='/'||ch=='^'||ch=='='||ch=='<'||ch=='>'){
             while(ch=='+'||ch=='-'||ch=='*'||ch=='/'||ch=='^'||ch=='='||ch=='<'||ch=='>'){
                 kata = kata + ch;
                 ch = Myfile.get();
             }
-            //cek jika komentar
-
-            string res = cekOperator(kata);
-            token[i][0]=kata;
-            token[i][1]=res;
-            token[i][2]="Operator";
-            i++;
-            kata = "";
-        }
+            // cek apakah komentar ( // )
+            if(kata == "//"){
+                while(ch != '\n'){
+                    ch = Myfile.get();
+                    kata = "";
+                }
+            }else if(kata == "/*"){ //cek komentar ( /* ...... */ )
+                while(kata != "*/" && !Myfile.eof()){
+                    kata = "";
+                    if(ch=='+'||ch=='-'||ch=='*'||ch=='/'||ch=='^'||ch=='='||ch=='<'||ch=='>'){
+                        while(ch=='+'||ch=='-'||ch=='*'||ch=='/'||ch=='^'||ch=='='||ch=='<'||ch=='>'){
+                            kata = kata + ch;
+                            ch = Myfile.get();
+                        }
+                    }else{
+                        ch = Myfile.get();
+                    }
+                };
+                kata = "";
+            }else{
+                string res = cekOperator(kata);
+                token[i][0]=kata;
+                token[i][1]=res;
+                token[i][2]="Operator";
+                i++;
+                kata = "";
+            }
+        }else
         if(ch=='('||ch==')'||ch=='['||ch==']'||ch==':'||ch==';'||ch=='.'||ch==','){
             while(ch=='('||ch==')'||ch=='['||ch==']'||ch==':'||ch==';'||ch=='.'||ch==','||ch=='='){
                 kata = kata + ch;
@@ -194,6 +211,8 @@ int main()
             token[i][2]="Delimiter";
             i++;
             kata="";
+        }else{
+            ch = Myfile.get();
         }
 	}
 	tampil_scanner();
