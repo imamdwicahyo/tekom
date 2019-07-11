@@ -1,5 +1,3 @@
-#pragma once
-
 #include <iostream>
 #include<fstream>
 #include<stdlib.h>
@@ -45,11 +43,11 @@ string cekKeyword(string key){
         {"integer","tipedata"},
         {"string","tipedata"},
         {"real","tipedata"},
-        {"int","integer_fy"}
+        {"int","tipedata"}
     };
 
     //pengecekan
-    string result = "identifier";
+    string result = "variabel";
     for(int i=0;i<=33;i++){
         if(keyword[i][0]==key){
             result = keyword[i][1];
@@ -75,7 +73,7 @@ string cekOperator(string key){
     };
 
     //pengecekan
-    string result = "unknow";
+    string result = "undefined";
     for(int i=0;i<10;i++){
         if(opr[i][0]==key){
             result = opr[i][1];
@@ -86,12 +84,14 @@ string cekOperator(string key){
 
 //fungsi untuk mengecek delimiter
 string cekDelimiter(string key){
-    string delimiter[10][2]=
+    string delimiter[11][2]=
     {
         {"(","l_parent"},
         {")","r_parent"},
         {"[","l_siku"},
         {"]","r_siku"},
+        {"{","l_kurawal"},
+        {"}","r_kurawal"},
         {";","semicolon"},
         {":","colon"},
         {",","coma"},
@@ -100,8 +100,8 @@ string cekDelimiter(string key){
     };
 
     //pengecekan
-    string result = "unknow";
-    for(int i=0;i<9;i++){
+    string result = "undefined";
+    for(int i=0;i<11;i++){
         if(delimiter[i][0]==key){
             result = delimiter[i][1];
         }
@@ -127,31 +127,29 @@ void tampil_scanner(){
 
 //funcsi untuk melakukan proses scanner
 void scanner(){
-    char ch = ' ';
-    bool first = true;
-    string kata = "";
+    char ch = ' ';          // untuk menampung karakter
+    bool is_first = true;   // untuk menampung pengecekan
+    string kata = "";       // untuk menampung kumpulan karakter
 
-    //mengambil text
-    ifstream Myfile("program2.pas");
+    ifstream Myfile("program2.pas");    //mengambil text
 
-    //pengecekan apakah file ada atau tidak
-	if(!Myfile.is_open()){
+
+	if(!Myfile.is_open()){  //pengecekan apakah file ada atau tidak
 		cout<<"file program tidak ditemukan, harap periksa kembali\n";
 		funEror();
 	}
 
-
-    //melakukan pengecekan perkarakter
+    //melakukan perulangan untuk mengecek tiap karakter
 	while(!Myfile.eof()){
-        if(first){
-            ch = Myfile.get();
+        if(is_first){       // pengecekan karakter pertama atau bukan
+            ch = Myfile.get();  // ambil karakter
         }
-        first = false;
+        is_first = false;
 
         if(ch == '{'){
             ch = Myfile.get();
         }else
-        if(ch == '\''){
+        if(ch == '\''){ // mencecek string
             ch = Myfile.get();
             while(ch != '\'' && !Myfile.eof()){
                 kata = kata + ch;
@@ -163,10 +161,8 @@ void scanner(){
             i++;
             kata = "";
             ch = Myfile.get();
-            //cout << "masuk ke sini inih " << ch << "\n";
-            //ch = Myfile.get();
         }else
-        if((ch>='A' && ch<='Z')||(ch>='a' && ch<='z')||ch=='_'){
+        if((ch>='A' && ch<='Z')||(ch>='a' && ch<='z')||ch=='_'){ // mengecek huruf dan _
 
             while((ch>='A' && ch<='Z')||(ch>='a' && ch<='z')||ch=='_'){
                 kata = kata + ch;
@@ -175,23 +171,18 @@ void scanner(){
             string res = cekKeyword(kata);
             token[i][0]=kata;
             token[i][1]=res;
-            if(res == "identifier"){
-                token[i][2]="identifier";
-            }else{
-                token[i][2]="Keyword";
-            }
-
+            token[i][2]="identifier";
             i++;
             kata = "";
         }else
-        if(ch>='0' && ch<='9'){
+        if(ch>='0' && ch<='9'){ // mengecek angka
             while(ch>='0' && ch<='9'){
                 kata = kata + ch;
                 ch = Myfile.get();
             }
             token[i][0]=kata;
             token[i][1]="integer";
-            token[i][2]="identifier";
+            token[i][2]="konstanta";
             i++;
             kata = "";
         }else
@@ -223,7 +214,7 @@ void scanner(){
                 string res = cekOperator(kata);
                 token[i][0]=kata;
                 token[i][1]=res;
-                token[i][2]="Operator";
+                token[i][2]="operator";
                 i++;
                 kata = "";
             }
@@ -236,7 +227,7 @@ void scanner(){
             string res = cekDelimiter(kata);
             token[i][0]=kata;
             token[i][1]=res;
-            token[i][2]="Delimiter";
+            token[i][2]="delimiter";
             i++;
             kata="";
         }else{
@@ -256,13 +247,13 @@ int checkTitle(int num){
         cout << "token number "<< num << " - " << token[num][0] <<" [diterima] \n";
     }
     num++;
-    if(token[num][2] != "identifier"){
+    if(token[num][1] != "variabel"){
         cout << "eror : nama program [" << token[num][0] << "], token number : " << num << " [tidak diterima]\n"; funEror();
     }else{
         cout << "token number "<< num << " - " << token[num][0] <<" [diterima] \n";
     }
     num++;
-    if(token[num][0] != ";"){
+    if(token[num][1] != "semicolon"){
         cout << "eror : program not declared, token number : " << num << " [tidak diterima]\n"; funEror();
     }else{
         cout << "token number "<< num << " - " << token[num][0] <<" [diterima] \n";
@@ -273,7 +264,7 @@ int checkTitle(int num){
 }
 
 int checkVariable(int num){
-    if(token[num][1] != "identifier"){
+    if(token[num][1] != "variabel"){
         cout << "eror : nama variabel [" << token[num][0] << "], token number : " << num << " [tidak diterima]\n"; funEror();
     }else{
         cout << "token number "<< num << " - " << token[num][0] <<" [diterima] \n";
@@ -303,7 +294,7 @@ int checkVariable(int num){
 int checkVar(int num){
     cout << "token number "<< num << " - " << token[num][0] <<" [diterima] \n";
     num++;
-    while(token[num][0] != "begin"){
+    while(token[num][1] != "begin_fy"){
         num = checkVariable(num);
     }
     return num;
@@ -318,19 +309,19 @@ int checkIf(int num){
         cout << "token number "<< num << " - " << token[num][0] <<" [diterima] \n";
     }
     num++;
-    if(token[num][2] != "identifier"){
+    if(token[num][1] != "variabel" && token[num][2] != "konstanta" && token[num][1] != "string"){
         cout << "eror : variable [" << token[num][0] << "], token number : " << num << " [tidak diterima]\n"; funEror();
     }else{
         cout << "token number "<< num << " - " << token[num][0] <<" [diterima] \n";
     }
     num++;
-    if(token[num][2] != "Operator"){
+    if(token[num][2] != "operator"){
         cout << "eror : operator  [" << token[num][0] << "], token number : " << num << " [tidak diterima]\n"; funEror();
     }else{
         cout << "token number "<< num << " - " << token[num][0] <<" [diterima] \n";
     }
     num++;
-    if(token[num][2] != "identifier"){
+    if(token[num][1] != "variabel" && token[num][2] != "konstanta" && token[num][1] != "string"){
         cout << "eror : variable [" << token[num][0] << "], token number : " << num << " [tidak diterima]\n"; funEror();
     }else{
         cout << "token number "<< num << " - " << token[num][0] <<" [diterima] \n";
@@ -363,16 +354,16 @@ int checkInput(int num){
             cout << "token number "<< num << " - " << token[num][0] <<" [diterima] \n";
         }
         num++;
-        if(token[num][2] != "identifier"){
+        if(token[num][1] != "variabel" && token[num][2] != "konstanta" && token[num][1] != "string"){
             cout << "eror : undefinied variable [" << token[num][0] << "], token number : " << num << " [tidak diterima]\n"; funEror();
         }else{
             cout << "token number "<< num << " - " << token[num][0] <<" [diterima] \n";
         }
         num++;
-        while(token[num][2] == "Operator"){
+        while(token[num][2] == "operator"){
             cout << "token number "<< num << " - " << token[num][0] <<" [diterima] \n";
             num++;
-            if(token[num][2] != "identifier"){
+            if(token[num][1] != "variabel" && token[num][2] != "konstanta" && token[num][1] != "string"){
             cout << "eror : undefinied variable [" << token[num][0] << "], token number : " << num << " [tidak diterima]\n"; funEror();
             }else{
                 cout << "token number "<< num << " - " << token[num][0] <<" [diterima] \n";
@@ -386,13 +377,50 @@ int checkInput(int num){
         }
         num++;
     }else{
-        if(token[num][1] != "semicolon"){
-            cout << "eror : undefinied variable [" << token[num][0] << "], token number : " << num << " [tidak diterima]\n"; funEror();
+        cout << "token number "<< num << " - " << token[num][0] <<" [diterima] \n";
+        num++;
+    }
+
+    return num;
+}
+
+int checkFor(int num){
+    cout << "token number "<< num << " - " << token[num][0] <<" [diterima] \n";
+    num++;
+    if(token[num][1] != "tipedata"){ //jika tipedata
+        cout << "token number "<< num << " - " << token[num][0] <<" [diterima] \n";
+        num++;
+        if(token[num][1] != "becomes"){
+            cout << "eror : becomes [" << token[num][0] << "], token number : " << num << " [tidak diterima]\n"; funEror();
         }else{
             cout << "token number "<< num << " - " << token[num][0] <<" [diterima] \n";
         }
         num++;
     }
+    if(token[num][1] != "variabel" && token[num][2] != "konstanta"){
+        cout << "eror : undefinied variable [" << token[num][0] << "], token number : " << num << " [tidak diterima]\n"; funEror();
+    }else{
+        cout << "token number "<< num << " - " << token[num][0] <<" [diterima] \n";
+    }
+    num++;
+    if(token[num][1] != "to_fy"){
+        cout << "eror : to, token yang dicek [" << token[num][0] << "], token number : " << num << " [tidak diterima]\n"; funEror();
+    }else{
+        cout << "token number "<< num << " - " << token[num][0] <<" [diterima] \n";
+    }
+    num++;
+    if(token[num][1] != "variabel" && token[num][2] != "konstanta"){
+        cout << "eror : undefinied variable [" << token[num][0] << "], token number : " << num << " [tidak diterima]\n"; funEror();
+    }else{
+        cout << "token number "<< num << " - " << token[num][0] <<" [diterima] \n";
+    }
+    num++;
+    if(token[num][1] != "do_fy"){
+        cout << "eror : 'do', token yang dicek [" << token[num][0] << "], token number : " << num << " [tidak diterima]\n"; funEror();
+    }else{
+        cout << "token number "<< num << " - " << token[num][0] <<" [diterima] \n";
+    }
+    num++;
 
     return num;
 }
@@ -401,9 +429,11 @@ int checkBody(int num){
     cout << "token number "<< num << " - " << token[num][0] <<" [diterima] \n";
     num++;
     while((token[num][0] != "end" && token[num+1][0] != ".") && num <= i){
-        if(token[num][1] == "if_fy"){
+        if(token[num][1] == "if_fy"){ // periksi parser if
             num = checkIf(num);
-        }else if(token[num][2] == "identifier"){
+        }else if(token[num][1] == "for_fy"){
+            num = checkFor(num);
+        }else if(token[num][1] == "variabel"){
             num = checkInput(num);
         }else{
             num++;
@@ -428,7 +458,7 @@ void Parser(){
     if(token[token_number][0] == "end" && token[token_number+1][0] == "." && token_number <= i){
         cout << "token number "<< token_number << " - " << token[token_number][0] <<" [diterima] \n";
         cout << "token number "<< token_number+1 << " - " << token[token_number+1][0] <<" [diterima] \n";
-        cout << "String Diterima \n\n\n";
+        cout << "[STRING DITERIMA] \n\n\n";
     }else{
         cout << "eror : end file not found, token number : " << token_number << " [tidak diterima]\n"; funEror();
     }

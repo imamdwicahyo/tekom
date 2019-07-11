@@ -13,6 +13,8 @@ begin
    if(a>3)then
         x:= 4 + 100000;
 
+   for i:= 1 to 10 do
+		x:=x+1*x;
    z := x + a;
    readln;
 end.
